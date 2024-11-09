@@ -26,8 +26,8 @@ def main():
     query(
         spark,
         df,
-        "SELECT country, COUNT(*) AS vaccine_protection FROM viral ORDER BY country",
-        "viral",
+        "SELECT country, COUNT(*) AS debt_cat FROM debt ORDER BY country",
+        "debt",
     )
     # example transform
     example_transform(df)

@@ -6,13 +6,6 @@ import requests
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import when, col
 
-from pyspark.sql.types import (
-     StructType, 
-     StructField, 
-     IntegerType, 
-     StringType
-)
-
 LOG_FILE = "Pyspark_Result.md"
 
 
@@ -39,7 +32,7 @@ def end_spark(spark):
 
 def extract(
     url="""
-   https://media.githubusercontent.com/media/nickeubank/MIDS_Data/master/World_Development_Indicators/wdi_small_tidy_2015.csv
+   https://media.githubusercontent.com/media/nickeubank/MIDS_Data/master/World_Development_Indicators/wdi_small_tidy_2015.csv?raw=true 
     """,
     file_path="data/wdi.csv",
     directory="data",
@@ -55,22 +48,20 @@ def extract(
     return file_path
 
 def load_data(spark, data="data/wdi.csv", name="wdi"):
-    """Load data with original headers and rename columns for easier handling."""
+    """Load data with original headers, handle NaN values, and rename columns for easier handling."""
     
-    # Define schema with shorter column names for easier use in the DataFrame
-    schema = StructType([
-        StructField("Country Name", StringType(), True),
-        StructField("Adolescent fertility rate (births per 1,000 women ages 15-19)", IntegerType(), True),
-        StructField("Antiretroviral therapy coverage for PMTCT (% of pregnant women living with HIV)", IntegerType(), True),
-        StructField("Battle-related deaths (number of people)", IntegerType(), True),
-        StructField("CPIA building human resources rating (1=low to 6=high)", IntegerType(), True),
-        StructField("CPIA business regulatory environment rating (1=low to 6=high)", IntegerType(), True),
-        StructField("CPIA debt policy rating (1=low to 6=high)", IntegerType(), True)
-    ])
-
-    # Load data using the schema and header options
-    df = spark.read.option("header", "true").schema(schema).csv(data)
-
+    # Load data with schema inference and handle header row
+    df = spark.read.option("header", "true").option("inferSchema", "true").csv(data)
+    df_subset = ["Country Name", "Adolescent fertility rate (births per 1,000 women ages 15-19)", 
+                 "Antiretroviral therapy coverage for PMTCT (% of pregnant women living with HIV)",
+                 "Battle-related deaths (number of people)", 
+                 "CPIA building human resources rating (1=low to 6=high)",
+                 "CPIA business regulatory environment rating (1=low to 6=high)", 
+                 "CPIA debt policy rating (1=low to 6=high)"
+                 ]
+    # Check for NaN values and replace them with None (Null values)
+    df = df[df_subset]
+    
     # Rename columns to shorter names after loading
     df = (
         df.withColumnRenamed("Country Name", "country")
@@ -110,12 +101,13 @@ def example_transform(df):
           | (col("country") == "Brazil")
           | (col("country") == "Peru") 
           | (col("country") == "Uruguay")  
-          | (col("country") == "Venezuela"),
+          | (col("country") == "Venezuela")
+          | (col("country") == "Argentina"),
     ]
 
     categories = ["South America"]
 
-    df = df.withColumn("Occupation_Category", when(
+    df = df.withColumn("Country_Category", when(
         conditions[0], categories[0]
         ).otherwise("Other"))
 
