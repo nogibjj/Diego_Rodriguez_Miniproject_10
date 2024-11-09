@@ -1,37 +1,56 @@
-[![CI](https://github.com/nogibjj/python-ruff-template/actions/workflows/cicd.yml/badge.svg)](https://github.com/nogibjj/python-ruff-template/actions/workflows/cicd.yml)
-## Template for Python projects with RUFF linter
+[![CI](https://github.com/nogibjj/Diego_Rodriguez_Miniproject_10/actions/workflows/cicd.yml/badge.svg)](https://github.com/nogibjj/Diego_Rodriguez_Miniproject_10/actions/workflows/cicd.yml)
 
-![1 15_rust_built_python_tools](https://github.com/nogibjj/python-ruff-template/assets/58792/db5f7bda-a977-4c67-acbe-a70fe034fbdf)
+# IDS706-Miniproject #10
+## File Structure 
+```
+Diego_Rodriguez_Mini_Project#10/
+├── .devcontainer/
+│   ├── devcontainer.json
+│   └── Dockerfile
+├── .github/
+|   └── workflows/cicd.yml
+├── data/
+|   └── wdi.csv
+├── mylib/
+│   ├── __init__.py
+|   └── lib.py
+├── .gitignore
+├── .ruff.toml
+├── Dockerfile
+├── LICENSE
+├── main.py
+├── Makefile
+├── Pyspark_Result.md
+├── README.md
+├── repeat.sh
+├── requirements.txt
+├── setup.sh
+└── test_main.py
+```
+## Purpose of project
+The purpose of this project is to present some transformation of data using `PySpark` with World Bank data and automating the publishing the SQL query into `Pyspark_Result.md` with CI/CD. The data used in this repository corresponde to the World Development Indicator from the World Bank. 
 
+###  PySpark Operations
+Under `mylib/` directory `lib.py` performs pyspark uses suchs as:
+  1. `extract` -> Take out the .csv file into a binary file to perform operations with PySpark.
+  2. `load_data` -> Take a subset of the first 7 column of the database.
+  3. `describe` -> Perfomrn statistical summary of the variable.
+  4. `example_transform` -> Create a new column, subsetting countries from the South America region to a new variable `Country_Category`
 
+###  Example Output
 
-1. First thing to do on launch is to open a new shell and verify virtualenv is sourced.
+The operation is query data
 
-Things included are:
+The query is SELECT * FROM wdi WHERE country = 'Chile'
 
-* `Makefile`
+|    | country   |   fertility_rate |   viral |   battle |   cpia_1 |   cpia_2 |   debt |
+|---:|:----------|-----------------:|--------:|---------:|---------:|---------:|-------:|
+|  0 | Chile     |           47.526 |      86 |      nan |      nan |      nan |    nan |
 
-* `Pytest`
+For other operations , please check `Pyspark_Result.md`.
 
-* `pandas`
+###  Testing and Lint Results:
 
-* `Ruff`:  
-
-Run `make lint` which runs `ruff check`.  You can find out more info on [Ruff here](https://github.com/astral-sh/ruff).
-
-* `Dockerfile`
-
-* `GitHub copilot`
-
-* `jupyter` and `ipython` 
-
-* A base set of libraries for devops and web
-
-* `githubactions`
-
-## References
-
-![1 1-function-essence-of-programming](https://github.com/nogibjj/python-ruff-template/assets/58792/f7f33cd3-cff5-4014-98ea-09b6a29c7557)
-
+<img width="1340" alt="Testing_lint" src="https://github.com/user-attachments/assets/09cc91bd-b71a-44c2-8f1e-c547dc2c841f">
 
 
